@@ -1,0 +1,15 @@
+<!-- <div class="single-question bounceInLeft animated">
+  <div class="answer-item" *ngFor="let a of question.answers" (click)="onSelect(a, i)">
+      <span>{{a.content}}</span>
+  </div>
+</div> -->
+<div [formGroup]="multipleForm">
+  <app-data-scroller (changePage)="currentPage=$event" [(currentPage)]="currentPage" formArrayName="answers">
+    <app-multiple-control [(i18n)]="i18n" *ngFor="let a of question.answers|dataScroller:4:currentPage;let i = index" [formControlName]="i" [answer]="a"></app-multiple-control>
+  </app-data-scroller>
+</div>
+<div class="btncon-wrapper">
+  <button class="btn-continue" (click)="onAnswer()" [disabled]="disabled()" [ngStyle]="disabled()?{opacity:0.5}:''">
+      {{i18n==='secondary'?'Continue':'Tiếp tục'}}
+  </button>
+</div>

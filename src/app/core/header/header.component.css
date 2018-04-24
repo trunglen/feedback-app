@@ -1,0 +1,21 @@
+header {
+    padding:0 80px 0 80px;
+
+}
+.header {
+    border-bottom: 1px solid #d3d3d3;
+}
+.header img {
+    max-width: 220px;
+    height: auto;
+}
+.language-wrapper{
+    width: 70%;
+    float: right
+}
+.language-wrapper img{
+    max-height: 56px;
+    width: auto;
+    float: right;
+    margin-left: 10px;
+}

@@ -1,1 +1,44 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+.feedback-title {
+    font-size: 3vh;
+    font-weight: 500;
+    text-align: center;
+    width:100%;
+    text-transform: uppercase;
+    color: rgb(6, 98, 149);
+    font-family: AvoBold;
+    margin-bottom: 24px;    
+}
+
+.single-question{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+.control-item{
+    width: 5%;
+    text-align: center;
+}
+
+.answer-text{
+    text-transform: uppercase;
+}
+.btncon-wrapper{
+    margin-top: 40px;
+    text-align: center;
+    width: 100%;
+}
+.btn-continue {
+    width: 20%;
+    height: 70px;
+    background-color: #0591ab;
+    font-size: 18pt;
+    border-radius: 1px;
+    font-weight: bold;
+    color: white;
+}

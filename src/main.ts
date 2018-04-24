@@ -7,6 +7,17 @@ import { environment } from './environments/environment';
 if (environment.production) {
   enableProdMode();
 }
-
+// loadConfig().then(res => {
+//   console.log(res);
+// }).then(res2 => {
+//   platformBrowserDynamic().bootstrapModule(AppModule)
+//     .catch(err => console.log(err));
+// })
+// function loadConfig() {
+//   return new Promise((resolve, reject) => {
+//     resolve('hello');
+//   });
+// }
 platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.log(err));
+    .catch(err => console.log(err));
+
