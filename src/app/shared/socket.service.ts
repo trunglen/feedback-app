@@ -13,10 +13,10 @@ export class SocketService {
     }
     connect(param: any) {
         const uri = ObjectToString(param);
-        if (this.ws == null) {
+        // if (this.ws == null) {
             // this.ws = new WebSocket(`${environment.baseWS}${uri}`);
             this.ws = new WebSocket(`${this.hostConfig.CetmWebSocket}${uri}`);
-        }
+        // }
         this.ws.onmessage = (message) => {
             const response = <string>message.data;
             const temp = response.split(' ');

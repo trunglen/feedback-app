@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-advertisement',
@@ -7,9 +8,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdvertisementComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private activedRoute: ActivatedRoute
+  ) { }
 
   ngOnInit() {
   }
 
+  onMoveHostSetting() {
+    this.router.navigate(['/host'])
+  }
+
+  onMoveStoreSetting() {
+    this.router.navigate(['/setting'])
+  }
+
+  onTurnOnDebug() {
+  }
 }

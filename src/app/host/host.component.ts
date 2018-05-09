@@ -26,7 +26,7 @@ export class HostComponent implements OnInit {
     this.hostConfig.Update(this.host);
     localStorage.setItem('feedback_host', this.hostConfig.data.host);
     localStorage.setItem('cetm_socket', this.cetmSocket);
-    // this.router.navigate(['/'], { relativeTo: this.activedRoute });
+    this.router.navigate(['/']);
   }
 
 }

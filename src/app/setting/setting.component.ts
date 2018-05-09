@@ -23,7 +23,7 @@ export class SettingComponent implements OnInit {
     console.log(Storage.getLocal('device') || 'not empty');
     let  setting = {
       branch_code: '',
-      feedback_code: '',
+      feedback_code: '',  
       counter_code: ''
     };
     if (!compareObject(Storage.getLocal('device'), {})) {
@@ -36,6 +36,6 @@ export class SettingComponent implements OnInit {
     const value = this.settingForm.value;
     value.actor_type = 'feedback';
     Storage.setLocal('device', value);
-    this.router.navigate(['/'], { relativeTo: this.activedRoute });
+    this.router.navigate(['/']);
   }
 }

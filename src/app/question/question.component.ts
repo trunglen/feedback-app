@@ -58,7 +58,8 @@ export class QuestionComponent implements OnInit {
   loadSetting() {
     this.feedbackSocketService.connect();
     this.feedbackSocketService.message$.subscribe(res => {
-      window.location.reload();
+      console.log('change layout')
+      window.location.reload(true);
     });
   }
 
