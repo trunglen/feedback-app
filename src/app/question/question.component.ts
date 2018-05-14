@@ -21,6 +21,7 @@ export class QuestionComponent implements OnInit {
   showingQuestion: Question = <Question>{};
   result: Result = new Result();
   currentLanguage: string
+  channel: string
   @HostBinding('style.background') background;
   constructor(
     private deviceService: DeviceService,
@@ -43,11 +44,9 @@ export class QuestionComponent implements OnInit {
         this.handleSocket();
       } else {
         if (res.channel) {
+          this.channel = res.channel
           this.loadSetting();
           this.result.initResult(null, null, null, null, res.channel)
-          this.locationService.getLocation().then(loc => {
-            this.result.location = <string>loc;
-          })
           this.getCampaign(null, res.channel);
           this.handleAnser();
         }
@@ -58,7 +57,7 @@ export class QuestionComponent implements OnInit {
   loadSetting() {
     this.feedbackSocketService.connect();
     this.feedbackSocketService.message$.subscribe(res => {
-      console.log('change layout')
+      console.log('reload')
       window.location.reload(true);
     });
   }
@@ -91,7 +90,6 @@ export class QuestionComponent implements OnInit {
             this.showingQuestion = surveys[0].questions[0];
           }
         } else {
-
         }
       }
     );
@@ -106,14 +104,18 @@ export class QuestionComponent implements OnInit {
         this.showingQuestion = question;
       } else {
         this.deviceService.addResult(this.result).subscribe(resp => {
-          this.feedbackSocketService.message$.next(this.result);
+          // this.feedbackSocketService.message$.next(this.result);
           this.result.refresh();
         }, err => console.log(err));
-        const temp = <Question>{ type: 'tks' };
+        const temp = <Question>{ type: 'tks', content: '' };
         this.showingQuestion = temp;
         setTimeout(() => {
           this.result.refresh();
+         if (this.channel === 'website') {
+           this.getCampaign(null,'website')
+         } else {
           this.showingQuestion = <Question>{};
+         }
         }, 3000);
       }
     });
