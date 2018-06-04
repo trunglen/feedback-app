@@ -1,9 +1,27 @@
 <app-header></app-header>
 <section>
   <app-title [title]="showingQuestion"></app-title>
-  <app-single-question *ngIf="showingQuestion.type==='single'" [question]="showingQuestion" [(i18n)]="currentLanguage"></app-single-question>
+  <!-- <app-single-question *ngIf="showingQuestion.type==='single'" [question]="showingQuestion" [(i18n)]="currentLanguage"></app-single-question>
   <app-multiple-question *ngIf="showingQuestion.type==='multiple'" [question]="showingQuestion" [(i18n)]="currentLanguage"></app-multiple-question>
   <app-answer-question *ngIf="showingQuestion.type==='answer'" [question]="showingQuestion" [(i18n)]="currentLanguage"></app-answer-question>
   <app-goodbye *ngIf="showingQuestion.type==='tks'" class="bounceInLeft animated"></app-goodbye>
-  <app-advertisement *ngIf="!showingQuestion.type"></app-advertisement>
+  <app-advertisement *ngIf="!showingQuestion.type"></app-advertisement> -->
+  <ng-container *ngIf="showingQuestion.type==='single'">
+    <app-single-question [question]="showingQuestion" [(i18n)]="currentLanguage"></app-single-question>
+  </ng-container>
+  <ng-container *ngIf="showingQuestion.type==='multiple'">
+    <div class="bounceInLeft animated">
+      <app-multiple-question [question]="showingQuestion" [(i18n)]="currentLanguage"></app-multiple-question>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="showingQuestion.type==='answer'">
+    <app-answer-question [question]="showingQuestion" [(i18n)]="currentLanguage"></app-answer-question>
+  </ng-container>
+  <ng-container *ngIf="showingQuestion.type==='tks'">
+
+    <app-goodbye class="bounceInLeft animated"></app-goodbye>
+  </ng-container>
+  <ng-container *ngIf="!showingQuestion.type">
+    <app-advertisement></app-advertisement>
+  </ng-container>
 </section>

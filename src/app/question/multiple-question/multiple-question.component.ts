@@ -12,7 +12,6 @@ import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 })
 export class MultipleQuestionComponent extends BaseComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('changed', this.i18n)
   }
 
   @Input() question: Question;
@@ -26,6 +25,7 @@ export class MultipleQuestionComponent extends BaseComponent implements OnInit, 
   ) { super() }
 
   ngOnInit() {
+    console.log('multiple_changed', this.i18n)
     const arr = this.question.answers.map((v, i, a) => {
       return this.fb.control({ i: null });
     });
@@ -45,8 +45,10 @@ export class MultipleQuestionComponent extends BaseComponent implements OnInit, 
 
   disabled() {
     const answers = <Answer[]>this.multipleForm.value.answers;
-    if (!answers.find(a => a !== null) && this.question.manded) {
-      return true;
+    if (this.question.manded) {
+      if (answers.find(a => a === null)===null) {
+        return true
+      }
     }
     return false;
   }
