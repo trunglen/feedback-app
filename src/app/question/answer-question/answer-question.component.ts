@@ -27,4 +27,11 @@ export class AnswerQuestionComponent extends BaseComponent implements OnInit {
       this.deviceService.answer(this.question);
     }
   }
+
+  disabled() {
+    if (this.question.manded && !this.answerContent) {
+      return true
+    }
+    return false
+  }
 }

@@ -1,6 +1,7 @@
 <button class="btn-hidden btn-host"  (dblclick)="onMoveHostSetting()">Host setting</button>
 <button  class="btn-hidden btn-store"  (dblclick) ="onMoveStoreSetting()">Store setting</button>
-<button  class="btn-hidden btn-debug"  (dblclick) ="onTurnOnDebug()">Turn on debug</button>
+<!-- <button  class="btn-hidden btn-debug"  (dblclick) ="onTurnOnDebug()">Turn on debug</button> -->
 
-<video style="width: 100vw;height:100vh;" autoplay muted loop controls="true" src="http://123.31.12.147:8081/static/adv/adv.mp4">
+
+<video style="width: 100vw;height:100vh;" autoplay muted loop controls="true" [src]="videoUrl">
 </video>

@@ -22,6 +22,7 @@ export class QuestionComponent implements OnInit {
   result: Result = new Result();
   currentLanguage: string
   channel: string
+  showAlertNoCampaign = false
   @HostBinding('style.background') background;
   constructor(
     private deviceService: DeviceService,
@@ -34,8 +35,8 @@ export class QuestionComponent implements OnInit {
     private translateService: TranslateService,
   ) { }
 
-
   ngOnInit() {
+    this.showAlert()
     this.translateService.selectedLanguage.subscribe(res => this.currentLanguage = res)
     this.activedRoute.queryParams.subscribe(res => {
       if (checkEmptyObject(res)) {
@@ -57,7 +58,6 @@ export class QuestionComponent implements OnInit {
   loadSetting() {
     this.feedbackSocketService.connect();
     this.feedbackSocketService.message$.subscribe(res => {
-      console.log('reload')
       window.location.reload(true);
     });
   }
@@ -81,15 +81,16 @@ export class QuestionComponent implements OnInit {
   }
 
   getCampaign(device: string, channel?: string) {
-    this.deviceService.getCampaigns(device, channel).subscribe(
-      res => {
-        if (res) {
+    this.deviceService.getCampaigns(device, channel).subscribe(res => {
+        if (!checkEmptyObject(res)) {
+          this.showAlertNoCampaign = false
           this.campaign = <Campaign>res;
           const surveys = this.campaign.survey;
           if (surveys) {
             this.showingQuestion = surveys[0].questions[0];
           }
         } else {
+          this.showAlertNoCampaign = true
         }
       }
     );
@@ -119,6 +120,14 @@ export class QuestionComponent implements OnInit {
         }, 3000);
       }
     });
+  }
+  showAlert() {
+    const setting = Storage.getLocal('device');
+    this.deviceService.getCampaigns(setting.feedback_code, '').subscribe(res => {
+      if (checkEmptyObject(res)) {
+        this.showAlertNoCampaign = true
+      }
+    })
   }
 }
 

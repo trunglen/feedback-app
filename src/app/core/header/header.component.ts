@@ -22,7 +22,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.layoutService.settingSubject.subscribe(res => console.log(res));
-    this.logo = `${this.hostConfig.Http}/static/setting/logo`;
+    this.logo = `${this.hostConfig.Http}/static/setting/logo?ran=` + Math.random();
   }
 
   changeLanguage(language: string) {

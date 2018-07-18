@@ -45,8 +45,17 @@ export class MultipleQuestionComponent extends BaseComponent implements OnInit, 
 
   disabled() {
     const answers = <Answer[]>this.multipleForm.value.answers;
+    console.log(answers.find(a => a instanceof Answer))
     if (this.question.manded) {
-      if (answers.find(a => a === null)===null) {
+      if (!answers.find(a => {
+        if (a != null) {
+          if (a.content != null) {
+            return true
+          }
+          return false
+        }
+        return false
+      })) {
         return true
       }
     }

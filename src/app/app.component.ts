@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.background = this.sanitizer.bypassSecurityTrustStyle(
-      `url("${this.hostConfig.Http}/static/setting/background")`
+      `url("${this.hostConfig.Http}/static/setting/background?ran=${Math.random()}")`
     );
   }
 
