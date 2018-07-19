@@ -28,6 +28,10 @@ export class DeviceService {
         return this.http.Post('/api/survey/result/create ', r);
     }
 
+    addUnfinishResult(r: Result) {
+        return this.http.Post('/api/survey/unfinish_result/create ', r);
+    }
+
     getCampaigns(device, channel: string) {
         return this.http.Get('/api/campaign/device/get', { device_id: device, channel: channel, at: new Date().getTime() })
     }

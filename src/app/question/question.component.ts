@@ -23,6 +23,7 @@ export class QuestionComponent implements OnInit {
   currentLanguage: string
   channel: string
   showAlertNoCampaign = false
+  isFinish = false
   @HostBinding('style.background') background;
   constructor(
     private deviceService: DeviceService,
@@ -67,7 +68,14 @@ export class QuestionComponent implements OnInit {
     this.socketService.connect(setting);
     this.socketService.message$.subscribe(res => {
       if (res.counter_activities) {
-        this.result.initResult(res);
+        this.result.initResult(res);        
+        if (!this.isFinish) {
+          this.deviceService.addUnfinishResult(this.result).subscribe(resp => {
+            // this.feedbackSocketService.message$.next(this.result);
+            this.result.refresh();
+          }, err => console.log(err));
+        }
+        this.isFinish = false
       }
       if (res[0]) {
         this.result.store = res[0].branch.name;
@@ -109,6 +117,7 @@ export class QuestionComponent implements OnInit {
           this.result.refresh();
         }, err => console.log(err));
         const temp = <Question>{ type: 'tks', content: '' };
+        this.isFinish = true
         this.showingQuestion = temp;
         setTimeout(() => {
           this.result.refresh();
