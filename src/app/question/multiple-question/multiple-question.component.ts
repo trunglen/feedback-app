@@ -25,7 +25,6 @@ export class MultipleQuestionComponent extends BaseComponent implements OnInit, 
   ) { super() }
 
   ngOnInit() {
-    console.log('multiple_changed', this.i18n)
     const arr = this.question.answers.map((v, i, a) => {
       return this.fb.control({ i: null });
     });

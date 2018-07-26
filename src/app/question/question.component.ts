@@ -68,7 +68,7 @@ export class QuestionComponent implements OnInit {
     this.socketService.connect(setting);
     this.socketService.message$.subscribe(res => {
       if (res.counter_activities) {
-        this.result.initResult(res);        
+        this.result.initResult(res);
         if (!this.isFinish) {
           this.deviceService.addUnfinishResult(this.result).subscribe(resp => {
             // this.feedbackSocketService.message$.next(this.result);
@@ -90,17 +90,17 @@ export class QuestionComponent implements OnInit {
 
   getCampaign(device: string, channel?: string) {
     this.deviceService.getCampaigns(device, channel).subscribe(res => {
-        if (!checkEmptyObject(res)) {
-          this.showAlertNoCampaign = false
-          this.campaign = <Campaign>res;
-          const surveys = this.campaign.survey;
-          if (surveys) {
-            this.showingQuestion = surveys[0].questions[0];
-          }
-        } else {
-          this.showAlertNoCampaign = true
+      if (!checkEmptyObject(res)) {
+        this.showAlertNoCampaign = false
+        this.campaign = <Campaign>res;
+        const surveys = this.campaign.survey;
+        if (surveys) {
+          this.showingQuestion = surveys[0].questions[0];
         }
+      } else {
+        this.showAlertNoCampaign = true
       }
+    }
     );
   }
 
@@ -121,11 +121,11 @@ export class QuestionComponent implements OnInit {
         this.showingQuestion = temp;
         setTimeout(() => {
           this.result.refresh();
-         if (this.channel === 'website') {
-           this.getCampaign(null,'website')
-         } else {
-          this.showingQuestion = <Question>{};
-         }
+          if (this.channel === 'website') {
+            this.getCampaign(null, 'website')
+          } else {
+            this.showingQuestion = <Question>{};
+          }
         }, 3000);
       }
     });
