@@ -28,6 +28,7 @@ export class SingleQuestionComponent extends BaseComponent implements OnInit {
   @Input() mode: string;
   selectAnswer = -1;
   currentPage = 1;
+  
   constructor(
     private deviceService: DeviceService,
   ) { super() }

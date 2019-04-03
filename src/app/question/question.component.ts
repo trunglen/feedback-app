@@ -68,13 +68,14 @@ export class QuestionComponent implements OnInit {
     this.socketService.connect(setting);
     this.socketService.message$.subscribe(res => {
       if (res.counter_activities) {
+        console.log(res.counter_activities)
         this.result.initResult(res);
-        if (!this.isFinish) {
-          this.deviceService.addUnfinishResult(this.result).subscribe(resp => {
-            // this.feedbackSocketService.message$.next(this.result);
-            this.result.refresh();
-          }, err => console.log(err));
-        }
+        // if (!this.isFinish) {
+        //   this.deviceService.addUnfinishResult(this.result).subscribe(resp => {
+        //     // this.feedbackSocketService.message$.next(this.result);
+        //     this.result.refresh();
+        //   }, err => console.log(err));
+        // }
         this.isFinish = false
       }
       if (res[0]) {
@@ -83,7 +84,8 @@ export class QuestionComponent implements OnInit {
       if (res.action === 'call') {
         this.getCampaign(setting.feedback_code)
         this.translateService.changeLanguage('primary')
-      } else if (res.action === 'finish') {
+      } else if (res.action === 'finish' || res.action === 'cancel' || res.action === 'move') {
+        this.showingQuestion = <Question>{ type: '' }
       }
     }, err => console.log(err));
   }
