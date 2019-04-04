@@ -1,92 +1,96 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
-import { SocketService } from '../shared/socket.service';
+import { SocketService, WebSocketService } from '../shared/socket.service';
 import { Campaign, Question } from '../shared/models/campaign.model';
 import { Result } from '../shared/models/result.model';
 import { Storage } from '../shared/storage';
-import { checkEmptyObject, LocationService } from '../shared/utils';
-import { Http } from '@angular/http';
-import { LayoutService } from '../layout.service';
-import { FeedbackSocketService } from '../shared/feedback-socket.service';
+import { checkEmptyObject } from '../shared/utils';
+import { FeedbackSocketService, ObjectToString } from '../shared/feedback-socket.service';
 import { ActivatedRoute } from '@angular/router';
 import { DeviceService } from './device.service';
 import { TranslateService } from '../core/translate.service';
+import { HostConfig } from '../runtime/project.config';
 
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
-  styleUrls: ['./question.component.css']
+  styleUrls: ['./question.component.css'],
+  providers: [
+    WebSocketService
+  ]
 })
 export class QuestionComponent implements OnInit {
   campaign: Campaign = <Campaign>{};
   showingQuestion: Question = <Question>{};
   result: Result = new Result();
   currentLanguage: string
-  channel: string
+  channel: string = ''
   showAlertNoCampaign = false
   isFinish = false
   @HostBinding('style.background') background;
   constructor(
     private deviceService: DeviceService,
-    private feedbackSocketService: FeedbackSocketService,
-    private socketService: SocketService,
-    private http: Http,
-    private layoutService: LayoutService,
+    private webSocketService: WebSocketService,
     private activedRoute: ActivatedRoute,
-    private locationService: LocationService,
     private translateService: TranslateService,
+    private hostConfig: HostConfig
   ) { }
 
   ngOnInit() {
-    this.showAlert()
     this.translateService.selectedLanguage.subscribe(res => this.currentLanguage = res)
-    this.activedRoute.queryParams.subscribe(res => {
-      if (checkEmptyObject(res)) {
-        this.loadSetting();
-        this.handleAnser();
-        this.handleSocket();
-      } else {
-        if (res.channel) {
-          this.channel = res.channel
-          this.loadSetting();
-          this.result.initResult(null, null, null, null, res.channel)
-          this.getCampaign(null, res.channel);
-          this.handleAnser();
-        }
-      }
-    });
-  }
-
-  loadSetting() {
-    this.feedbackSocketService.connect();
-    this.feedbackSocketService.message$.subscribe(res => {
-      window.location.reload(true);
-    });
+    var queryParam = this.activedRoute.snapshot.queryParams
+    if (queryParam.channel) {
+      console.log('cxzcx')
+      this.webSocketService.connect(`${this.hostConfig.WebSocket}/socket/join?actor_name=website`).subscribe()
+      this.channel = queryParam.channel
+      this.result.initResult(null, null, null, null, queryParam.channel)
+      this.getCampaign(null, queryParam.channel);
+      this.handleAnser();
+    } else {
+      console.log('321321')
+      this.handleAnser();
+      this.handleSocket();
+    }
+    // .subscribe(res => {
+    //   console.log(res)
+    //   if (checkEmptyObject(res)) {
+    //     this.handleAnser();
+    //     this.handleSocket();
+    //   } else {
+    //     if (res.channel) {
+    //       this.webSocketService.connect(`${this.hostConfig.WebSocket}/socket/join?actor_name=website`).subscribe()
+    //       this.channel = res.channel
+    //       this.result.initResult(null, null, null, null, res.channel)
+    //       this.getCampaign(null, res.channel);
+    //       this.handleAnser();
+    //     }
+    //   }
+    // });
   }
 
   handleSocket() {
     const setting = Storage.getLocal('device');
-    this.socketService.connect(setting);
-    this.socketService.message$.subscribe(res => {
-      if (res.counter_activities) {
-        console.log(res.counter_activities)
-        this.result.initResult(res);
-        // if (!this.isFinish) {
-        //   this.deviceService.addUnfinishResult(this.result).subscribe(resp => {
-        //     // this.feedbackSocketService.message$.next(this.result);
-        //     this.result.refresh();
-        //   }, err => console.log(err));
-        // }
-        this.isFinish = false
+    this.webSocketService.connect(`${this.hostConfig.WebSocket}/socket/join?actor_name=${this.channel == '' ? 'device' : 'website'}&device_id=${setting.feedback_code}`).subscribe(res => {
+      console.log(res)
+    })
+    this.webSocketService.connect(`${this.hostConfig.CetmWebSocket}${ObjectToString(setting)}`).subscribe(res => {
+      const data = res.data
+      switch (res.pattern) {
+        case '/initial':
+          this.result.initResult(data.counter_activities);
+          break;
+        case '/assets':
+          this.result.store = data[0].branch.name;
+          break;
+        case '/ticket_action':
+          if (data.action === 'call') {
+            this.getCampaign(setting.feedback_code)
+            this.translateService.changeLanguage('primary')
+          } else if (data.action === 'finish' || data.action === 'cancel' || data.action === 'move') {
+            this.showingQuestion = <Question>{ type: '' }
+          }
+          break;
       }
-      if (res[0]) {
-        this.result.store = res[0].branch.name;
-      }
-      if (res.action === 'call') {
-        this.getCampaign(setting.feedback_code)
-        this.translateService.changeLanguage('primary')
-      } else if (res.action === 'finish' || res.action === 'cancel' || res.action === 'move') {
-        this.showingQuestion = <Question>{ type: '' }
-      }
+
     }, err => console.log(err));
   }
 
@@ -95,6 +99,8 @@ export class QuestionComponent implements OnInit {
       if (!checkEmptyObject(res)) {
         this.showAlertNoCampaign = false
         this.campaign = <Campaign>res;
+        console.log(this.campaign)
+
         const surveys = this.campaign.survey;
         if (surveys) {
           this.showingQuestion = surveys[0].questions[0];
@@ -102,8 +108,10 @@ export class QuestionComponent implements OnInit {
       } else {
         this.showAlertNoCampaign = true
       }
-    }
-    );
+    }, err => {
+      console.log(err)
+      this.showAlertNoCampaign = true
+    });
   }
 
   handleAnser() {
@@ -132,14 +140,14 @@ export class QuestionComponent implements OnInit {
       }
     });
   }
-  showAlert() {
-    const setting = Storage.getLocal('device');
-    this.deviceService.getCampaigns(setting.feedback_code, '').subscribe(res => {
-      if (checkEmptyObject(res)) {
-        this.showAlertNoCampaign = true
-      }
-    })
-  }
+  // showAlert() {
+  //   const setting = Storage.getLocal('device');
+  //   this.deviceService.getCampaigns(setting.feedback_code, '').subscribe(res => {
+  //     if (checkEmptyObject(res)) {
+  //       this.showAlertNoCampaign = true
+  //     }
+  //   })
+  // }
 }
 
 let flag = 0;

@@ -6,10 +6,15 @@ import { TitleComponent } from './title/title.component';
 import { ControlSlideComponent } from './control-slide/control-slide.component';
 import { TranslateService } from './translate.service';
 import { TranslatorDirective } from './translate.directive';
+import { HttpService, HttpErrorService } from '../shared/http';
+import { ToastNotificationService } from '../shared/toast-notification.service';
+import { SnotifyService, ToastDefaults } from 'ng-snotify';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    HttpClientModule
   ],
   declarations: [
     HeaderComponent,
@@ -26,7 +31,16 @@ import { TranslatorDirective } from './translate.directive';
     TranslatorDirective
   ],
   providers: [
-    TranslateService
+    TranslateService,
+    HttpService,
+    ToastNotificationService,
+    SnotifyService,
+    { provide: 'SnotifyToastConfig', useValue: ToastDefaults },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorService,
+      multi: true
+    }
   ]
 })
 export class CoreModule { }

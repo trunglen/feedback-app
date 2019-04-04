@@ -20,10 +20,10 @@ export class Result {
         this.survey_detail = [];
     }
 
-    initResult(config, campaign?: Campaign, survey?: Survey, question?: Question, channel?: string, location?: string) {
-        if (config) {
-            this.counter = config.counter_activities.name;
-            this.uname = config.counter_activities.data.uname;
+    initResult(counterActivities, campaign?: Campaign, survey?: Survey, question?: Question, channel?: string, location?: string) {
+        if (counterActivities) {
+            this.counter = counterActivities.name;
+            this.uname = counterActivities.data.uname;
             this.device = Storage.getLocal('device').feedback_code;
             this.channel = 'store';
         }
